@@ -13,8 +13,10 @@ const config: Config = {
           path: './src/utils/api.ts',
           name: 'api',
         },
+        useNamedParameters: true,
       },
       prettier: true,
+      httpClient: 'axios',
     },
     input: {
       target: './scripts/schema.json',

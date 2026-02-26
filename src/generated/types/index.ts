@@ -13,6 +13,8 @@ export * from './postResponce';
 export * from './postResponceAuthor';
 export * from './postResponceContent';
 export * from './postResponse';
+export * from './postsControllerPostPathParameters';
+export * from './postsControllerUserPostsPathParameters';
 export * from './refreshResponceModel';
 export * from './refreshTokenInput';
 export * from './signupInput';

@@ -21,7 +21,13 @@ import type {
   UseQueryResult,
 } from '@tanstack/react-query';
 
-import type { CreatePostInput, PostResponce, PostResponse } from './types';
+import type {
+  CreatePostInput,
+  PostResponce,
+  PostResponse,
+  PostsControllerPostPathParameters,
+  PostsControllerUserPostsPathParameters,
+} from './types';
 
 import { api } from '../utils/api';
 
@@ -30,30 +36,21 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Create a new post
  */
-export type postsControllerCreateResponse200 = {
-  data: PostResponce;
-  status: 200;
-};
-
-export type postsControllerCreateResponseSuccess = postsControllerCreateResponse200 & {
-  headers: Headers;
-};
-export type postsControllerCreateResponse = postsControllerCreateResponseSuccess;
-
-export const getPostsControllerCreateUrl = () => {
-  return `/posts`;
-};
-
-export const postsControllerCreate = async (
+export const postsControllerCreate = (
   createPostInput: CreatePostInput,
-  options?: RequestInit,
-): Promise<postsControllerCreateResponse> => {
-  return api<postsControllerCreateResponse>(getPostsControllerCreateUrl(), {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(createPostInput),
-  });
+  options?: SecondParameter<typeof api>,
+  signal?: AbortSignal,
+) => {
+  return api<PostResponce>(
+    {
+      url: `/posts`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: createPostInput,
+      signal,
+    },
+    options,
+  );
 };
 
 export const getPostsControllerCreateMutationOptions = <
@@ -123,27 +120,11 @@ export const usePostsControllerCreate = <TError = unknown, TContext = unknown>(
 /**
  * @summary Get all posts
  */
-export type postsControllerGetAllPostsResponse200 = {
-  data: PostResponse[];
-  status: 200;
-};
-
-export type postsControllerGetAllPostsResponseSuccess = postsControllerGetAllPostsResponse200 & {
-  headers: Headers;
-};
-export type postsControllerGetAllPostsResponse = postsControllerGetAllPostsResponseSuccess;
-
-export const getPostsControllerGetAllPostsUrl = () => {
-  return `/posts`;
-};
-
-export const postsControllerGetAllPosts = async (
-  options?: RequestInit,
-): Promise<postsControllerGetAllPostsResponse> => {
-  return api<postsControllerGetAllPostsResponse>(getPostsControllerGetAllPostsUrl(), {
-    ...options,
-    method: 'GET',
-  });
+export const postsControllerGetAllPosts = (
+  options?: SecondParameter<typeof api>,
+  signal?: AbortSignal,
+) => {
+  return api<PostResponse[]>({ url: `/posts`, method: 'GET', signal }, options);
 };
 
 export const getPostsControllerGetAllPostsQueryKey = () => {
@@ -165,7 +146,7 @@ export const getPostsControllerGetAllPostsQueryOptions = <
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof postsControllerGetAllPosts>>> = ({
     signal,
-  }) => postsControllerGetAllPosts({ signal, ...requestOptions });
+  }) => postsControllerGetAllPosts(requestOptions, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof postsControllerGetAllPosts>>,
@@ -259,31 +240,17 @@ export function usePostsControllerGetAllPosts<
 /**
  * @summary Get all posts of a user
  */
-export type postsControllerUserPostsResponse200 = {
-  data: PostResponse[];
-  status: 200;
+export const postsControllerUserPosts = (
+  { userId }: PostsControllerUserPostsPathParameters,
+  options?: SecondParameter<typeof api>,
+  signal?: AbortSignal,
+) => {
+  return api<PostResponse[]>({ url: `/posts/user/${userId}`, method: 'GET', signal }, options);
 };
 
-export type postsControllerUserPostsResponseSuccess = postsControllerUserPostsResponse200 & {
-  headers: Headers;
-};
-export type postsControllerUserPostsResponse = postsControllerUserPostsResponseSuccess;
-
-export const getPostsControllerUserPostsUrl = (userId: string) => {
-  return `/posts/user/${userId}`;
-};
-
-export const postsControllerUserPosts = async (
-  userId: string,
-  options?: RequestInit,
-): Promise<postsControllerUserPostsResponse> => {
-  return api<postsControllerUserPostsResponse>(getPostsControllerUserPostsUrl(userId), {
-    ...options,
-    method: 'GET',
-  });
-};
-
-export const getPostsControllerUserPostsQueryKey = (userId: string) => {
+export const getPostsControllerUserPostsQueryKey = ({
+  userId,
+}: PostsControllerUserPostsPathParameters) => {
   return [`/posts/user/${userId}`] as const;
 };
 
@@ -291,7 +258,7 @@ export const getPostsControllerUserPostsQueryOptions = <
   TData = Awaited<ReturnType<typeof postsControllerUserPosts>>,
   TError = unknown,
 >(
-  userId: string,
+  { userId }: PostsControllerUserPostsPathParameters,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof postsControllerUserPosts>>, TError, TData>
@@ -301,11 +268,11 @@ export const getPostsControllerUserPostsQueryOptions = <
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getPostsControllerUserPostsQueryKey(userId);
+  const queryKey = queryOptions?.queryKey ?? getPostsControllerUserPostsQueryKey({ userId });
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof postsControllerUserPosts>>> = ({
     signal,
-  }) => postsControllerUserPosts(userId, { signal, ...requestOptions });
+  }) => postsControllerUserPosts({ userId }, requestOptions, signal);
 
   return { queryKey, queryFn, enabled: !!userId, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof postsControllerUserPosts>>,
@@ -323,7 +290,7 @@ export function usePostsControllerUserPosts<
   TData = Awaited<ReturnType<typeof postsControllerUserPosts>>,
   TError = unknown,
 >(
-  userId: string,
+  pathParams: PostsControllerUserPostsPathParameters,
   options: {
     query: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof postsControllerUserPosts>>, TError, TData>
@@ -344,7 +311,7 @@ export function usePostsControllerUserPosts<
   TData = Awaited<ReturnType<typeof postsControllerUserPosts>>,
   TError = unknown,
 >(
-  userId: string,
+  pathParams: PostsControllerUserPostsPathParameters,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof postsControllerUserPosts>>, TError, TData>
@@ -365,7 +332,7 @@ export function usePostsControllerUserPosts<
   TData = Awaited<ReturnType<typeof postsControllerUserPosts>>,
   TError = unknown,
 >(
-  userId: string,
+  pathParams: PostsControllerUserPostsPathParameters,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof postsControllerUserPosts>>, TError, TData>
@@ -382,7 +349,7 @@ export function usePostsControllerUserPosts<
   TData = Awaited<ReturnType<typeof postsControllerUserPosts>>,
   TError = unknown,
 >(
-  userId: string,
+  { userId }: PostsControllerUserPostsPathParameters,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof postsControllerUserPosts>>, TError, TData>
@@ -391,7 +358,7 @@ export function usePostsControllerUserPosts<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getPostsControllerUserPostsQueryOptions(userId, options);
+  const queryOptions = getPostsControllerUserPostsQueryOptions({ userId }, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;
@@ -403,31 +370,15 @@ export function usePostsControllerUserPosts<
 /**
  * @summary Get a post by its ID
  */
-export type postsControllerPostResponse200 = {
-  data: PostResponse;
-  status: 200;
+export const postsControllerPost = (
+  { postId }: PostsControllerPostPathParameters,
+  options?: SecondParameter<typeof api>,
+  signal?: AbortSignal,
+) => {
+  return api<PostResponse>({ url: `/posts/${postId}`, method: 'GET', signal }, options);
 };
 
-export type postsControllerPostResponseSuccess = postsControllerPostResponse200 & {
-  headers: Headers;
-};
-export type postsControllerPostResponse = postsControllerPostResponseSuccess;
-
-export const getPostsControllerPostUrl = (postId: string) => {
-  return `/posts/${postId}`;
-};
-
-export const postsControllerPost = async (
-  postId: string,
-  options?: RequestInit,
-): Promise<postsControllerPostResponse> => {
-  return api<postsControllerPostResponse>(getPostsControllerPostUrl(postId), {
-    ...options,
-    method: 'GET',
-  });
-};
-
-export const getPostsControllerPostQueryKey = (postId: string) => {
+export const getPostsControllerPostQueryKey = ({ postId }: PostsControllerPostPathParameters) => {
   return [`/posts/${postId}`] as const;
 };
 
@@ -435,7 +386,7 @@ export const getPostsControllerPostQueryOptions = <
   TData = Awaited<ReturnType<typeof postsControllerPost>>,
   TError = unknown,
 >(
-  postId: string,
+  { postId }: PostsControllerPostPathParameters,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof postsControllerPost>>, TError, TData>
@@ -445,10 +396,10 @@ export const getPostsControllerPostQueryOptions = <
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getPostsControllerPostQueryKey(postId);
+  const queryKey = queryOptions?.queryKey ?? getPostsControllerPostQueryKey({ postId });
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof postsControllerPost>>> = ({ signal }) =>
-    postsControllerPost(postId, { signal, ...requestOptions });
+    postsControllerPost({ postId }, requestOptions, signal);
 
   return { queryKey, queryFn, enabled: !!postId, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof postsControllerPost>>,
@@ -466,7 +417,7 @@ export function usePostsControllerPost<
   TData = Awaited<ReturnType<typeof postsControllerPost>>,
   TError = unknown,
 >(
-  postId: string,
+  pathParams: PostsControllerPostPathParameters,
   options: {
     query: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof postsControllerPost>>, TError, TData>
@@ -487,7 +438,7 @@ export function usePostsControllerPost<
   TData = Awaited<ReturnType<typeof postsControllerPost>>,
   TError = unknown,
 >(
-  postId: string,
+  pathParams: PostsControllerPostPathParameters,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof postsControllerPost>>, TError, TData>
@@ -508,7 +459,7 @@ export function usePostsControllerPost<
   TData = Awaited<ReturnType<typeof postsControllerPost>>,
   TError = unknown,
 >(
-  postId: string,
+  pathParams: PostsControllerPostPathParameters,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof postsControllerPost>>, TError, TData>
@@ -525,7 +476,7 @@ export function usePostsControllerPost<
   TData = Awaited<ReturnType<typeof postsControllerPost>>,
   TError = unknown,
 >(
-  postId: string,
+  { postId }: PostsControllerPostPathParameters,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof postsControllerPost>>, TError, TData>
@@ -534,7 +485,7 @@ export function usePostsControllerPost<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getPostsControllerPostQueryOptions(postId, options);
+  const queryOptions = getPostsControllerPostQueryOptions({ postId }, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;

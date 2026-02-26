@@ -28,30 +28,21 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Signup a new user
  */
-export type authControllerSignupResponse201 = {
-  data: Auth;
-  status: 201;
-};
-
-export type authControllerSignupResponseSuccess = authControllerSignupResponse201 & {
-  headers: Headers;
-};
-export type authControllerSignupResponse = authControllerSignupResponseSuccess;
-
-export const getAuthControllerSignupUrl = () => {
-  return `/auth/signup`;
-};
-
-export const authControllerSignup = async (
+export const authControllerSignup = (
   signupInput: SignupInput,
-  options?: RequestInit,
-): Promise<authControllerSignupResponse> => {
-  return api<authControllerSignupResponse>(getAuthControllerSignupUrl(), {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(signupInput),
-  });
+  options?: SecondParameter<typeof api>,
+  signal?: AbortSignal,
+) => {
+  return api<Auth>(
+    {
+      url: `/auth/signup`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: signupInput,
+      signal,
+    },
+    options,
+  );
 };
 
 export const getAuthControllerSignupMutationOptions = <
@@ -121,30 +112,21 @@ export const useAuthControllerSignup = <TError = unknown, TContext = unknown>(
 /**
  * @summary Login an existing user
  */
-export type authControllerLoginResponse200 = {
-  data: Auth;
-  status: 200;
-};
-
-export type authControllerLoginResponseSuccess = authControllerLoginResponse200 & {
-  headers: Headers;
-};
-export type authControllerLoginResponse = authControllerLoginResponseSuccess;
-
-export const getAuthControllerLoginUrl = () => {
-  return `/auth/login`;
-};
-
-export const authControllerLogin = async (
+export const authControllerLogin = (
   loginInput: LoginInput,
-  options?: RequestInit,
-): Promise<authControllerLoginResponse> => {
-  return api<authControllerLoginResponse>(getAuthControllerLoginUrl(), {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(loginInput),
-  });
+  options?: SecondParameter<typeof api>,
+  signal?: AbortSignal,
+) => {
+  return api<Auth>(
+    {
+      url: `/auth/login`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: loginInput,
+      signal,
+    },
+    options,
+  );
 };
 
 export const getAuthControllerLoginMutationOptions = <
@@ -214,30 +196,21 @@ export const useAuthControllerLogin = <TError = unknown, TContext = unknown>(
 /**
  * @summary Refresh access token using a refresh token
  */
-export type authControllerRefreshTokenResponse200 = {
-  data: RefreshResponceModel;
-  status: 200;
-};
-
-export type authControllerRefreshTokenResponseSuccess = authControllerRefreshTokenResponse200 & {
-  headers: Headers;
-};
-export type authControllerRefreshTokenResponse = authControllerRefreshTokenResponseSuccess;
-
-export const getAuthControllerRefreshTokenUrl = () => {
-  return `/auth/refresh-token`;
-};
-
-export const authControllerRefreshToken = async (
+export const authControllerRefreshToken = (
   refreshTokenInput: RefreshTokenInput,
-  options?: RequestInit,
-): Promise<authControllerRefreshTokenResponse> => {
-  return api<authControllerRefreshTokenResponse>(getAuthControllerRefreshTokenUrl(), {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(refreshTokenInput),
-  });
+  options?: SecondParameter<typeof api>,
+  signal?: AbortSignal,
+) => {
+  return api<RefreshResponceModel>(
+    {
+      url: `/auth/refresh-token`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: refreshTokenInput,
+      signal,
+    },
+    options,
+  );
 };
 
 export const getAuthControllerRefreshTokenMutationOptions = <

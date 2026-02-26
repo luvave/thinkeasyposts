@@ -1,4 +1,4 @@
-import axios, { AxiosError, ResponseType } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 
 const baseURL = process.env.VITE_API_URL || '';
 const API_TIMEOUT_IN_MS = 10000;
@@ -34,30 +34,22 @@ axiosInstance.interceptors.response.use(
   },
 );
 
+interface ApiConfig {
+  url: string;
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+  headers: Record<string, any>;
+  data: any;
+  signal?: AbortSignal;
+}
+
 export const api = async <T>(
-  url: string,
-  {
-    method,
-    params,
-    headers,
-    body,
-    responseType,
-  }: {
-    method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
-    params?: Record<string, any>;
-    headers?: Record<string, any>;
-    body?: BodyInit | null;
-    responseType?: ResponseType;
-  },
+  config: ApiConfig,
+  axiosConfig: AxiosRequestConfig = {},
 ): Promise<T> => {
   try {
     const response = await axiosInstance.request<T>({
-      url,
-      method,
-      headers,
-      params,
-      data: body,
-      responseType,
+      ...config,
+      ...axiosConfig,
     });
     return response.data;
   } catch (error) {
