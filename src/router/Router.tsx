@@ -1,9 +1,11 @@
 import {
   createPostRoute,
   homeRoute,
+  loginRoute,
   notFoundRoute,
   postDetailRoute,
   rootRoute,
+  signUpRoute,
 } from './routes.tsx';
 import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { AuthContextType, useAuth } from '../context/AuthContext.tsx';
@@ -17,6 +19,8 @@ const routeTree = rootRoute.addChildren([
   createPostRoute,
   postDetailRoute,
   notFoundRoute,
+  loginRoute,
+  signUpRoute,
 ]);
 
 export const router = createRouter({

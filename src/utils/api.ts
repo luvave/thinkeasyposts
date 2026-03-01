@@ -37,8 +37,8 @@ axiosInstance.interceptors.response.use(
 interface ApiConfig {
   url: string;
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
-  headers: Record<string, any>;
-  data: any;
+  headers?: Record<string, any>;
+  data?: any;
   signal?: AbortSignal;
 }
 

@@ -5,5 +5,13 @@
   "errorPage": {
     "defaultErr": "An unexpected error occurred.",
     "somethingWentWrong": "Something went wrong"
+  },
+  "menu": {
+    "signup": "Sign Up",
+    "login": "Login",
+    "brand": "ThinkEasy"
+  },
+  "home": {
+    "title": "All posts"
   }
 }

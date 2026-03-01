@@ -15,11 +15,24 @@ export interface RouterContexts {
 export const rootRoute = createRootRouteWithContext<RouterContexts>()({
   component: AppLayout,
   errorComponent: ErrorPage,
+  notFoundComponent: NotFoundPage,
 });
 
 export const homeRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
+  component: HomePage,
+});
+
+export const loginRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/login',
+  component: HomePage,
+});
+
+export const signUpRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/signup',
   component: HomePage,
 });
 
