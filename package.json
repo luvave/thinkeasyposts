@@ -12,12 +12,21 @@
     "generate:api": "node scripts/generate-api.js"
   },
   "dependencies": {
+    "@chakra-ui/react": "^3.33.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@tanstack/react-form": "^1.28.3",
     "@tanstack/react-query": "^5.90.21",
-    "@tanstack/react-router": "^1.163.2",
-    "@tanstack/react-router-devtools": "^1.163.2",
+    "@tanstack/react-router": "^1.163.3",
+    "@tanstack/react-router-devtools": "^1.163.3",
     "axios": "^1.13.5",
+    "framer-motion": "^12.34.3",
+    "i18next": "^25.8.13",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-error-boundary": "^6.1.1",
+    "react-i18next": "^16.5.4",
+    "yup": "^1.7.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
@@ -25,6 +34,7 @@
     "@types/node": "^25.3.1",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
+    "@types/react-i18next": "^8.1.0",
     "@vitejs/plugin-react": "^4.3.1",
     "cross-env": "^10.1.0",
     "dotenv": "^17.3.1",

@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 
-const baseURL = process.env.VITE_API_URL || '';
+const baseURL = import.meta.env.VITE_API_URL || '';
 const API_TIMEOUT_IN_MS = 10000;
 
 const getAccessToken = () => {

@@ -17,7 +17,7 @@ import type { SignupInput } from '../generated/types';
 import { useLocalStorage } from '../hooks/useLocalStorage.ts';
 import { isTokenValid } from '../utils/auth.ts';
 
-interface AuthContextType {
+export interface AuthContextType {
   isAuthenticated: boolean;
   login: (input: LoginInput) => Promise<void>;
   signup: (input: SignupInput) => Promise<void>;

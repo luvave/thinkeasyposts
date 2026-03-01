@@ -7,6 +7,7 @@ export default defineConfig({
     tanstackRouter({
       target: 'react',
       autoCodeSplitting: true,
+      enableRouteGeneration: false,
     }),
     react(),
   ],

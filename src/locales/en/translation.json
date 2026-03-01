@@ -1,0 +1,9 @@
+{
+  "notFoundPage": {
+    "notFound": "Page not found"
+  },
+  "errorPage": {
+    "defaultErr": "An unexpected error occurred.",
+    "somethingWentWrong": "Something went wrong"
+  }
+}
